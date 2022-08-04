@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="sv-SE">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alko Logg</title>
+  <script src="./script.js" defer></script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main>
+    <div class="shotsInfo" title="1 shot = 4cl 40% starksprit"><span id="shots">0</span> shots</div>
+    <table class="drinkTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Namn</th>
+          <th>Volym</th>
+          <th>Alk%</th>
+          <th>Shots</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td><input type="number" class="newDrinkCount" min="0" step="any" value="1"></td>
+          <td><input type="text" class="newDrinkName"></td>
+          <td><input type="number" class="newDrinkVolumeMl" min="1" step="1">ml</td>
+          <td><input type="number" class="newDrinkAlcoholPercentage" min="0" max="100" step="0.1">%</td>
+        </tr>
+        <tr>
+          <td colspan="5">
+            <div class="newDrinkAddWrapper"><button class="newDrinkAdd">Lägg till dryck ovan</button></div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </main>
+  <span class="version">v1.0.0</span>
+</body>
+</html>
