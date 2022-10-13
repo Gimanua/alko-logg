@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2022-10-14
+###
+- Ability to click on table cells to edit the values and recalculate the total shots value.
+
 ## [1.0.0] - 2022-08-04
 ### Added
 - Shots count at top of page.
