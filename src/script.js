@@ -1,4 +1,4 @@
-/** @type {HTMLTableElement} */
+/** @type {HTMLTableSectionElement} */
 const drinksTableBody = document.querySelector('.drinkTable tbody')
 /** @type {HTMLSpanElement} */
 const shotsEl = document.getElementById('shots')
@@ -49,6 +49,37 @@ function shotsInDrink (drink, opts = {}) {
   return strongLiquorShotsEquivalent
 }
 
+/**
+ * @param {'count'|'name'|'volume'|'alcohol'} type
+ */
+function getEditElement (type) {
+  const editElement = document.createElement('input')
+
+  if (type === 'name') {
+    editElement.type = 'text'
+    editElement.classList.add('newDrinkName')
+    return editElement
+  }
+  editElement.type = 'number'
+  editElement.min = type === 'volume'
+    ? '1'
+    : '0'
+
+  if (type === 'count') {
+    editElement.step = 'any'
+    editElement.classList.add('newDrinkCount')
+  } else if (type === 'volume') {
+    editElement.step = '1'
+    editElement.classList.add('newDrinkVolumeMl')
+  } else if (type === 'alcohol') {
+    editElement.max = '100'
+    editElement.step = '0.1'
+    editElement.classList.add('newDrinkAlcoholPercentage')
+  }
+
+  return editElement
+}
+
 function addRow (drink) {
   const row = document.createElement('tr')
   const countTd = document.createElement('td')
@@ -56,6 +87,40 @@ function addRow (drink) {
   const volumeTd = document.createElement('td')
   const alcoholTd = document.createElement('td')
   const shotsTd = document.createElement('td')
+
+  /**
+   * @param {HTMLTableCellElement} el 
+   * @param {'count'|'name'|'volume'|'alcohol'} type
+   */
+  function addEditListener (el, type, getEditValue, suffix = '', onEditComplete) {
+    let editingCell = false
+    el.addEventListener('click', () => {
+      if (editingCell) { return }
+      editingCell = true
+      const oldValue = getEditValue()
+      const editElement = getEditElement(type)
+      el.replaceChildren(editElement)
+      editElement.value = oldValue
+      editElement.focus()
+
+      editElement.addEventListener('focusout', () => {
+        const rawNewValue = type === 'name'
+          ? (editElement.value || oldValue)
+          : (editElement.valueAsNumber || oldValue)
+        const displayValue = rawNewValue.toLocaleString(siteLocale)
+        el.replaceChildren(`${displayValue}${suffix}`)
+        editingCell = false
+        onEditComplete(rawNewValue)
+        shotsTd.textContent = shotsInDrink(drink, { singleDrink: true }).toLocaleString(siteLocale, { maximumFractionDigits: 2 }) + '/st'
+        updateTotalShots()
+      })
+    })
+  }
+
+  addEditListener(countTd, 'count', () => parseFloat(countTd.innerText.replace(',', '.')), '', rawNewValue => { drink.count = rawNewValue })
+  addEditListener(nameTd, 'name', () => nameTd.innerText, '', rawNewValue => { drink.name = rawNewValue })
+  addEditListener(volumeTd, 'volume', () => parseInt(volumeTd.innerText.substring(0, volumeTd.innerText.length - 2)), 'ml', rawNewValue => { drink.volumeMl = rawNewValue })
+  addEditListener(alcoholTd, 'alcohol', () => parseFloat(alcoholTd.innerText.substring(0, alcoholTd.innerText.length - 1).replace(',', '.')), '%', rawNewValue => { drink.alcoholContent = rawNewValue / 100 })
 
   countTd.textContent = drink.count.toLocaleString(siteLocale)
   nameTd.textContent = drink.name
@@ -67,13 +132,16 @@ function addRow (drink) {
   drinksTableBody.append(row)
 }
 
-function addDrink (count, name, volumeMl, alcoholContent) {
-  const newDrink = { count, name, volumeMl, alcoholContent }
-  drinks.push(newDrink)
+function updateTotalShots () {
   shotsEl.textContent = drinks
     .map(drink => shotsInDrink(drink))
     .reduce((a, b) => a + b, 0)
     .toLocaleString(siteLocale, { maximumFractionDigits: 2 })
+}
 
+function addDrink (count, name, volumeMl, alcoholContent) {
+  const newDrink = { count, name, volumeMl, alcoholContent }
+  drinks.push(newDrink)
+  updateTotalShots()
   addRow(newDrink)
 }
