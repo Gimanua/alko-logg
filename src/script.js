@@ -13,9 +13,24 @@ const newDrinkVolumeMlEl = document.querySelector('.newDrinkVolumeMl')
 const newDrinkAlcoholPercentageEl = document.querySelector('.newDrinkAlcoholPercentage')
 /** @type {HTMLButtonElement} */
 const newDrinkAddEl = document.querySelector('.newDrinkAdd')
+/** @type {HTMLButtonElement} */
+const clearListEl = document.querySelector('.clearList')
 
 const siteLocale = 'sv-SE'
-const drinks = []
+const localStorageDrinksKey = 'drinks'
+
+/**
+ * @typedef {Object} Drink
+ * @property {Number} count
+ * @property {String} name
+ * @property {Number} volumeMl
+ * @property {Number} alcoholContent
+ */
+
+/** @type {Drink[]} */
+const drinks = JSON.parse(localStorage.getItem(localStorageDrinksKey)) || []
+drinks.forEach(drink => { addRow(drink) })
+updateTotalShots()
 
 newDrinkAddEl.addEventListener('click', () => {
   const newDrinkCount = newDrinkCountEl.valueAsNumber
@@ -25,15 +40,27 @@ newDrinkAddEl.addEventListener('click', () => {
 
   if (isNaN(newDrinkCount) || newDrinkCount <= 0) { return }
   if (newDrinkName === '') { return }
-  if (isNaN(newDrinkVolumeMl) || newDrinkVolumeMl <= 0) { return }
-  if (isNaN(newDrinkAlcoholContent) || newDrinkAlcoholContent <= 0 || newDrinkAlcoholContent > 100) { return }
+  if (isNaN(newDrinkVolumeMl) || newDrinkVolumeMl < 0) { return }
+  if (isNaN(newDrinkAlcoholContent) || newDrinkAlcoholContent < 0 || newDrinkAlcoholContent > 100) { return }
 
-  addDrink(newDrinkCount, newDrinkName, newDrinkVolumeMl, newDrinkAlcoholContent)
+  const newDrink = { count: newDrinkCount, name: newDrinkName, volumeMl: newDrinkVolumeMl, alcoholContent: newDrinkAlcoholContent }
+  addDrink(newDrink)
   newDrinkCountEl.value = '1'
   newDrinkNameEl.value = ''
   newDrinkVolumeMlEl.value = ''
   newDrinkAlcoholPercentageEl.value = ''
   newDrinkCountEl.focus()
+})
+
+clearListEl.addEventListener('click', () => {
+  const shouldClearList = window.confirm('Är du säker på att du vill rensa listan?')
+  if (shouldClearList === false) { return }
+  for (let i = 0; i < drinks.length; i++) {
+    removeRow(1)
+  }
+  drinks.splice(0,  drinks.length)
+  updateTotalShots()
+  updateLocalStorage()
 })
 
 function shotsInDrink (drink, opts = {}) {
@@ -80,6 +107,9 @@ function getEditElement (type) {
   return editElement
 }
 
+/**
+ * @param {Drink} drink
+ */
 function addRow (drink) {
   const row = document.createElement('tr')
   const countTd = document.createElement('td')
@@ -104,20 +134,32 @@ function addRow (drink) {
       editElement.focus()
 
       editElement.addEventListener('focusout', () => {
-        const rawNewValue = type === 'name'
-          ? (editElement.value || oldValue)
-          : (editElement.valueAsNumber || oldValue)
+        let rawNewValue = type === 'name'
+          ? (editElement.value)
+          : (editElement.valueAsNumber)
+        if (rawNewValue == null || rawNewValue === '' || rawNewValue < 0) { rawNewValue = oldValue }
         const displayValue = rawNewValue.toLocaleString(siteLocale)
         el.replaceChildren(`${displayValue}${suffix}`)
         editingCell = false
         onEditComplete(rawNewValue)
         shotsTd.textContent = shotsInDrink(drink, { singleDrink: true }).toLocaleString(siteLocale, { maximumFractionDigits: 2 }) + '/st'
         updateTotalShots()
+        updateLocalStorage()
       })
     })
   }
 
-  addEditListener(countTd, 'count', () => parseFloat(countTd.innerText.replace(',', '.')), '', rawNewValue => { drink.count = rawNewValue })
+  addEditListener(countTd, 'count', () => parseFloat(countTd.innerText.replace(',', '.')), '', rawNewValue => {
+    if (rawNewValue === 0) {
+      const index = drinks.indexOf(drink)
+      removeRow(index + 1)
+      drinks.splice(index, 1)
+      updateTotalShots()
+      updateLocalStorage()
+      return
+    }
+    drink.count = rawNewValue
+  })
   addEditListener(nameTd, 'name', () => nameTd.innerText, '', rawNewValue => { drink.name = rawNewValue })
   addEditListener(volumeTd, 'volume', () => parseInt(volumeTd.innerText.substring(0, volumeTd.innerText.length - 2)), 'ml', rawNewValue => { drink.volumeMl = rawNewValue })
   addEditListener(alcoholTd, 'alcohol', () => parseFloat(alcoholTd.innerText.substring(0, alcoholTd.innerText.length - 1).replace(',', '.')), '%', rawNewValue => { drink.alcoholContent = rawNewValue / 100 })
@@ -132,6 +174,11 @@ function addRow (drink) {
   drinksTableBody.append(row)
 }
 
+function removeRow (index) {
+  const row = drinksTableBody.querySelector(`tr:nth-child(${index})`)
+  row.remove()
+}
+
 function updateTotalShots () {
   shotsEl.textContent = drinks
     .map(drink => shotsInDrink(drink))
@@ -139,9 +186,17 @@ function updateTotalShots () {
     .toLocaleString(siteLocale, { maximumFractionDigits: 2 })
 }
 
-function addDrink (count, name, volumeMl, alcoholContent) {
-  const newDrink = { count, name, volumeMl, alcoholContent }
-  drinks.push(newDrink)
+/**
+ * @param {Drink} drink
+ */
+function addDrink (drink) {
+  drinks.push(drink)
   updateTotalShots()
-  addRow(newDrink)
+  addRow(drink)
+  updateLocalStorage()
+}
+
+function updateLocalStorage () {
+  const drinksAsJSON = JSON.stringify(drinks)
+  localStorage.setItem(localStorageDrinksKey, drinksAsJSON)
 }

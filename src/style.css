@@ -50,12 +50,13 @@ main {
   text-align: start;
 }
 
-.drinkTable > tfoot .newDrinkAddWrapper {
+.drinkTable > tfoot .actionButtonWrapper {
   display: flex;
   justify-content: center;
+  gap: 2rem;
 }
 
-.newDrinkAdd {
+.actionButton {
   font-size: 4rem;
   padding: 2rem;
 }
