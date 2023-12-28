@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2023-12-28
+### Added
+- Column for timestamp
+- Dialog for creating new drinks or editing existing ones. (This is the biggest change, this dialog also supports
+mixed drinks that have multiple ingredients and calculates the total amount of alcohol automatically)
+- Buttons for duplicating or removing an entry from the list
+- Directory for resources, and 1 helper class Drink.js in it
+
+### Changed
+- When a validation error occurs, an alert is sent indicating what needs to be fixed
+- Moved index.html, style.css & index.js to root of repo
+- Renamed style.css to index.css
+
+### Removed
+- Column for drink count
+- Column for drink volume
+- Column for drink alcohol percentage
+- Github Pages Action (nowadays you can just host from the root of the repo on Pages automatically)
+
 ## [1.2.0] - 2022-12-25
 ### Added
 - Link to this changelog (https://github.com/Gimanua/alko-logg/blob/main/CHANGELOG.md) on the version text.

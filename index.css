@@ -1,0 +1,162 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1vmin;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+
+.shotsInfo {
+  color: yellow;
+  font-size: 18rem;  
+}
+
+.drinkTable {
+  border-spacing: 2rem;
+}
+
+.drinkTable td {
+  font-size: 4rem;
+}
+
+.drinkTable .name {
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.drinkTable .duplicate,
+.drinkTable .remove {
+  font-size: 3rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  width: 5rem;
+}
+
+.drinkTable > thead th {
+  font-size: 5rem;
+  text-align: start;
+}
+
+.drinkTable > tfoot .actionButtonWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.actionButton {
+  font-size: 4rem;
+  padding: 2rem;
+}
+
+.version {
+  position: fixed;
+  font-size: 4rem;
+  bottom: 0.2em;
+  right: 0.5em;
+}
+
+dialog {
+  margin: auto;
+}
+
+#edit-drink-dialog {
+  font-size: 5rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+#edit-drink-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+#edit-drink-dialog input {
+  font-size: 4rem;
+}
+
+#edit-drink-dialog .summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+#edit-drink-dialog .summary label {
+  display: contents;
+}
+
+#edit-drink-dialog .summary label > strong {
+  text-align: end;
+}
+
+#edit-drink-dialog .name {
+  width: 32rem;
+}
+
+#edit-drink-dialog .volume {
+  width: 14rem;
+}
+
+#edit-drink-dialog .volume:read-only {
+  appearance: textfield;
+  background: none;
+}
+
+#edit-drink-dialog .alcohol-percentage {
+  width: 14rem;
+}
+
+#edit-drink-dialog .alcohol-percentage:read-only {
+  appearance: textfield;
+  background: none;
+}
+
+#edit-drink-dialog .is-mixed-drink {
+  width: 4rem;
+  height: 4rem;
+}
+
+#edit-drink-dialog .ingredients-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+#edit-drink-dialog .ingredients-section.hide {
+  display: none;
+}
+
+#edit-drink-dialog .ingredients-section button {
+  font-size: 3rem;
+  padding: 1rem;
+}
+
+#edit-drink-dialog .ingredients-table {
+  font-size: 3rem;
+  border-spacing: 1rem;
+}
+
+#edit-drink-dialog .ingredients-table .edit-new-ingredient td {
+  padding-top: 4rem;
+}
+
+#edit-drink-dialog .actions-section {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 3rem;
+}

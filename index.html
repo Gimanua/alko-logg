@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="sv-SE">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alko Logg</title>
+  <script type="module" src="./index.js"></script>
+  <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+  <main>
+    <div class="shotsInfo" title="1 shot = 4cl 40% starksprit"><span id="shots">0</span> shots</div>
+    <table class="drinkTable">
+      <thead>
+        <tr>
+          <th>Klockslag</th>
+          <th>Namn</th>
+          <th>Shots</th>
+          <th>+ / -</th>
+        </tr>
+      </thead>
+      <tbody class="drink-rows">
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4">
+            <div class="actionButtonWrapper">
+              <button class="actionButton newDrink">Lägg till ny dryck</button>
+              <button class="actionButton clearList">Rensa</button>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </main>
+  <a href="https://github.com/Gimanua/alko-logg/blob/main/CHANGELOG.md" class="version">v2.0.0</a>
+
+  <dialog id="edit-drink-dialog">
+    <form method="dialog">
+      <div class="summary">
+        <label><strong>Namn: </strong><div><input class="name" type="text" required autofocus/></div></label>
+        <label><strong>Volym: </strong><div><input class="volume" type="number" min="1" step="1" required>ml</div></label>
+        <label><strong>Alkoholhalt: </strong><div><input class="alcohol-percentage" type="number" min="0" max="100" step="0.1" required>%</div></label>
+        <label><strong>Blanddryck: </strong><div><input class="is-mixed-drink" type="checkbox"></div></label>
+      </div>
+      <div class="ingredients-section hide">
+        <strong>Ingredienser</strong>
+        <table class="ingredients-table">
+          <thead>
+            <tr>
+              <th>Namn</th>
+              <th>Volym</th>
+              <th>Alk%</th>
+              <th>Åtgärd</th>
+            </tr>
+          </thead>
+          <tbody class="ingredient-rows">
+          </tbody>
+          <tfoot class="edit-new-ingredient">
+            <tr>
+              <td><input class="name" type="text"></td>
+              <td><input class="volume" type="number" min="1" step="1">ml</td>
+              <td><input class="alcohol-percentage" type="number" min="0" max="100" step="0.1">%</td>
+              <td><button class="add" type="button">Lägg till</button></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="actions-section">
+        <button class="actionButton confirm" type="button">Bekräfta</button>
+        <button class="actionButton" type="submit" value="cancel" formnovalidate>Avbryt</button>
+      </div>
+    </form>
+  </dialog>
+  <template id="drink-row-template">
+    <tr class="drink-row">
+      <td class="time"></td>
+      <td class="name"></td>
+      <td class="shots"></td>
+      <td class="actions">
+        <button class="duplicate">+</button>
+        <button class="remove">-</button>
+      </td>
+    </tr>
+  </template>
+  <template id="ingredient-row-template">
+    <tr>
+      <td><input class="name" type="text"></td>
+      <td><input class="volume" type="number" min="1" step="1">ml</td>
+      <td><input class="alcohol-percentage" type="number" min="0" max="100" step="0.1">%</td>
+      <td><button class="remove" type="button">Ta bort</button></td>
+    </tr>
+  </template>
+</body>
+</html>
